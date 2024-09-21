@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch DroneVisualizer",
+            "request": "launch",
+            "mainClass": "drone.DroneVisualizer",
+            "vmArgs": "--module-path \"C:/Program Files/javafx-sdk-21.0.4/lib\" --add-modules javafx.controls,javafx.fxml",
+            "console": "integratedTerminal"
+        }
+    ]
+}
+

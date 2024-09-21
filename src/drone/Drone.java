@@ -27,7 +27,7 @@ public class Drone {
     }
 
     // Simulates random drone movement
-    private void moveDrone() {
+    public void moveDrone() {
         // Randomly move the drone up, down, left, or right
         this.posX += (int)(Math.random() * 10 - 5); // Move in X direction
         this.posY += (int)(Math.random() * 10 - 5); // Move in Y direction
@@ -39,8 +39,16 @@ public class Drone {
         System.out.println("Drone moved to position: (" + posX + ", " + posY + ")");
     }
 
+    public int getPosX() {
+        return this.posX;  // Assuming posX is a field representing the drone's X position
+    }
+    
+    public int getPosY() {
+        return this.posY;  // Assuming posY is a field representing the drone's Y position
+    }
+    
     // Detects objects around the drone
-    private List<ObjectDetection.DetectedObject> detectObjects() {
+    public List<ObjectDetection.DetectedObject> detectObjects() {
         System.out.println("Detecting objects...");
         return objectDetection.detectObjects(posX, posY, DETECTION_RANGE);
     }
