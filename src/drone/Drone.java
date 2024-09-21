@@ -1,13 +1,19 @@
 package drone;
 
+import java.util.List;
+
 public class Drone {
     private int posX, posY; // Drone's position on the map
-    private static final int GRID_SIZE = 100; // Simulated map grid
+    private static final int GRID_SIZE = 100;
+    private static final int DETECTION_RANGE = 10; // Drone's detection range
+
+    private ObjectDetection objectDetection;
 
     public Drone() {
         // Start the drone at the center of the grid
         this.posX = GRID_SIZE / 2;
         this.posY = GRID_SIZE / 2;
+        this.objectDetection = new ObjectDetection();
     }
 
     // Method to start the simulation
@@ -15,8 +21,8 @@ public class Drone {
         System.out.println("Starting drone simulation...");
         for (int i = 0; i < 10; i++) {
             moveDrone();
-            detectObjects();
-            MapVisualization.display(posX, posY);
+            List<ObjectDetection.DetectedObject> detectedObjects = detectObjects();
+            MapVisualization.display(posX, posY, detectedObjects);
         }
     }
 
@@ -33,9 +39,9 @@ public class Drone {
         System.out.println("Drone moved to position: (" + posX + ", " + posY + ")");
     }
 
-    // Placeholder for object detection (to be developed in later phases)
-    private void detectObjects() {
+    // Detects objects around the drone
+    private List<ObjectDetection.DetectedObject> detectObjects() {
         System.out.println("Detecting objects...");
-        // Detection logic will go here in later phases
+        return objectDetection.detectObjects(posX, posY, DETECTION_RANGE);
     }
 }

@@ -1,0 +1,153 @@
+To start with **Phase 1 (Basic Implementation)** in the **Java version** of your project, we will structure 
+the project in a simple way, and as we proceed, we can expand it. Here's how you can set up the folders and 
+files within your root project folder `DroneSurveillanceJava`.
+
+### **Basic Folder and File Structure**:
+
+1. **Root Folder (`DroneSurveillanceJava/`)**
+    - This is your main project folder.
+
+2. **Subfolders**:
+   - **`src/`**: Contains the source code for the project.
+   - **`lib/`**: Optional, but good practice if you plan to include any external libraries later.
+   - **`assets/`**: You’ll place map images, mock data files (if needed), or other resources here.
+
+3. **Main Java Classes** (under `src/`):
+   - **`Main.java`**: The main class to run the program.
+   - **`Drone.java`**: The class simulating the drone’s movement and sensor data acquisition.
+   - **`ObjectDetection.java`**: The class that simulates detecting humans and vehicles.
+   - **`MapVisualization.java`**: The class responsible for visualizing the map and the detected objects.
+
+---
+
+### **Folder/File Breakdown**:
+
+1. **`src/` Folder**:
+   - Create a subfolder `drone/` for your package. All Java classes will reside here.
+   - Inside `drone/`, create the following Java files:
+   
+     ```bash
+     DroneSurveillanceJava/
+     ├── lib/                 # For external libraries (optional)
+     ├── assets/              # For map images, etc.
+     └── src/
+         └── drone/
+             ├── Main.java          # Main entry point
+             ├── Drone.java         # Simulates drone movement
+             ├── ObjectDetection.java # Simulates detecting humans/vehicles
+             └── MapVisualization.java # Handles map rendering
+     ```
+
+2. **File Descriptions**:
+
+   - **`Main.java`**:
+     This will serve as the entry point of the application. It will initialize the drone and start the tracking simulation.
+
+     ```java
+     package drone;
+
+     public class Main {
+         public static void main(String[] args) {
+             Drone drone = new Drone();
+             drone.startSimulation();
+         }
+     }
+     ```
+
+   - **`Drone.java`**:
+     This class will simulate the drone's movement across a map grid. Initially, it will move in a random pattern 
+	 and detect objects in its range.
+
+     ```java
+     package drone;
+
+     public class Drone {
+         private int posX, posY; // Drone's position on the map
+         private static final int GRID_SIZE = 100; // Simulated map grid
+
+         public Drone() {
+             // Start the drone at the center of the grid
+             this.posX = GRID_SIZE / 2;
+             this.posY = GRID_SIZE / 2;
+         }
+
+         // Method to start the simulation
+         public void startSimulation() {
+             System.out.println("Starting drone simulation...");
+             for (int i = 0; i < 10; i++) {
+                 moveDrone();
+                 detectObjects();
+                 MapVisualization.display(posX, posY);
+             }
+         }
+
+         // Simulates random drone movement
+         private void moveDrone() {
+             // Randomly move the drone up, down, left, or right
+             this.posX += (int)(Math.random() * 10 - 5); // Move in X direction
+             this.posY += (int)(Math.random() * 10 - 5); // Move in Y direction
+
+             // Ensure the drone stays within the grid
+             this.posX = Math.max(0, Math.min(posX, GRID_SIZE));
+             this.posY = Math.max(0, Math.min(posY, GRID_SIZE));
+
+             System.out.println("Drone moved to position: (" + posX + ", " + posY + ")");
+         }
+
+         // Placeholder for object detection (to be developed in later phases)
+         private void detectObjects() {
+             System.out.println("Detecting objects...");
+             // Detection logic will go here in later phases
+         }
+     }
+     ```
+
+   - **`ObjectDetection.java`**:
+     This class will later simulate the detection of humans and vehicles. For now, we can leave it as a placeholder, but 
+	 eventually, it will contain logic to randomly generate objects in the drone’s path.
+
+     ```java
+     package drone;
+
+     public class ObjectDetection {
+         // Placeholder for object detection logic
+     }
+     ```
+
+   - **`MapVisualization.java`**:
+     This class will visualize the drone’s movement. For now, it will just print the drone’s coordinates. Later, we will 
+	 add more complex visualization (using JavaFX or a graphical library).
+
+     ```java
+     package drone;
+
+     public class MapVisualization {
+
+         public static void display(int posX, int posY) {
+             System.out.println("Drone at: (" + posX + ", " + posY + ")");
+             // In the future, graphical rendering of the map and objects will be added here.
+         }
+     }
+     ```
+
+### **Steps to Implement Phase 1**:
+
+1. **Initialize the Project**:
+   - Open VSCode, navigate to your project folder (`DroneSurveillanceJava`), and set up your workspace.
+   - Ensure you have the **Java Extension Pack** installed in VSCode to support Java projects.
+
+2. **Create the Folder Structure**:
+   - Manually create the folders `src/drone/`, `lib/`, and `assets/`.
+   - Add the `.java` files as shown in the structure above under `src/drone/`.
+
+3. **Run the Program**:
+   - Compile and run the `Main.java` class.
+   - The output should show the drone moving randomly on a grid, with its coordinates printed after each move.
+
+### **Next Steps for Phase 1**:
+   - After you confirm the basic movement simulation is working, the next step will be adding mock object detection 
+   logic in the `ObjectDetection.java` file.
+   - Later, we’ll integrate a map or grid visualization for displaying the drone’s movements.
+
+This setup provides a solid foundation for the drone simulation, and we'll build on it by adding object detection, 
+map visualization, and classification in subsequent phases. Let me know if you'd like to proceed to any specific feature next!

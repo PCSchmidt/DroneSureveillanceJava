@@ -1,0 +1,214 @@
+Great! Now that the basic movement simulation is working, let’s proceed with the **Next Steps for Phase 1**, focusing 
+on the following tasks:
+
+1. **Object Detection (Mock Data for Humans and Vehicles)**
+2. **Map Visualization Enhancements (Mark Detections on the Map)**
+
+### Step 1: **Add Mock Object Detection Logic**
+
+We will modify the `ObjectDetection` class to generate random objects within the drone's field of view, distinguishing 
+between humans and vehicles. Then, we’ll display the detected objects on the map.
+
+#### 1.1 **Update `ObjectDetection.java` to Simulate Object Generation**
+
+We will randomly generate humans and vehicles with properties like type, coordinates, etc.
+
+Here’s how the updated `ObjectDetection.java` will look:
+
+```java
+package drone;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class ObjectDetection {
+    
+    private static final int GRID_SIZE = 100;
+    private Random random = new Random();
+
+    // Class to represent detected objects (human or vehicle)
+    public static class DetectedObject {
+        public String type;  // "Human" or "Vehicle"
+        public String subType;  // "Male", "Female", "Car", "Truck", etc.
+        public int x, y;  // Coordinates of the object
+
+        public DetectedObject(String type, String subType, int x, int y) {
+            this.type = type;
+            this.subType = subType;
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public String toString() {
+            return type + " (" + subType + ") at (" + x + ", " + y + ")";
+        }
+    }
+
+    // Generates a random list of detected objects in the drone's range
+    public List<DetectedObject> detectObjects(int droneX, int droneY, int range) {
+        List<DetectedObject> detectedObjects = new ArrayList<>();
+
+        // Randomly generate 1 to 5 objects
+        int numObjects = random.nextInt(5) + 1;
+
+        for (int i = 0; i < numObjects; i++) {
+            // Randomly decide if the object is a human or vehicle
+            String type = random.nextBoolean() ? "Human" : "Vehicle";
+            String subType;
+
+            // If it's a human, determine male/female, adult/child
+            if (type.equals("Human")) {
+                subType = random.nextBoolean() ? "Male" : "Female";
+                subType += random.nextBoolean() ? " Adult" : " Child";
+            } else {
+                // If it's a vehicle, determine the type
+                int vehicleType = random.nextInt(3);
+                if (vehicleType == 0) {
+                    subType = "Car";
+                } else if (vehicleType == 1) {
+                    subType = "Truck";
+                } else {
+                    subType = "SUV";
+                }
+            }
+
+            // Randomly place the object within the drone's range
+            int x = droneX + random.nextInt(range * 2 + 1) - range;
+            int y = droneY + random.nextInt(range * 2 + 1) - range;
+
+            // Ensure the object is within the grid boundaries
+            x = Math.max(0, Math.min(x, GRID_SIZE));
+            y = Math.max(0, Math.min(y, GRID_SIZE));
+
+            detectedObjects.add(new DetectedObject(type, subType, x, y));
+        }
+
+        return detectedObjects;
+    }
+}
+```
+
+This `ObjectDetection` class generates random humans and vehicles within a given range of the drone's position. It 
+returns a list of `DetectedObject` instances that can be visualized on the map.
+
+#### 1.2 **Modify `Drone.java` to Use the Object Detection Logic**
+
+Now, modify the `Drone` class to integrate object detection. Update the `detectObjects` method to use `ObjectDetection` 
+and store the detected objects.
+
+```java
+package drone;
+
+import java.util.List;
+
+public class Drone {
+    private int posX, posY; // Drone's position on the map
+    private static final int GRID_SIZE = 100;
+    private static final int DETECTION_RANGE = 10; // Drone's detection range
+
+    private ObjectDetection objectDetection;
+
+    public Drone() {
+        // Start the drone at the center of the grid
+        this.posX = GRID_SIZE / 2;
+        this.posY = GRID_SIZE / 2;
+        this.objectDetection = new ObjectDetection();
+    }
+
+    // Method to start the simulation
+    public void startSimulation() {
+        System.out.println("Starting drone simulation...");
+        for (int i = 0; i < 10; i++) {
+            moveDrone();
+            List<ObjectDetection.DetectedObject> detectedObjects = detectObjects();
+            MapVisualization.display(posX, posY, detectedObjects);
+        }
+    }
+
+    // Simulates random drone movement
+    private void moveDrone() {
+        // Randomly move the drone up, down, left, or right
+        this.posX += (int)(Math.random() * 10 - 5); // Move in X direction
+        this.posY += (int)(Math.random() * 10 - 5); // Move in Y direction
+
+        // Ensure the drone stays within the grid
+        this.posX = Math.max(0, Math.min(posX, GRID_SIZE));
+        this.posY = Math.max(0, Math.min(posY, GRID_SIZE));
+
+        System.out.println("Drone moved to position: (" + posX + ", " + posY + ")");
+    }
+
+    // Detects objects around the drone
+    private List<ObjectDetection.DetectedObject> detectObjects() {
+        System.out.println("Detecting objects...");
+        return objectDetection.detectObjects(posX, posY, DETECTION_RANGE);
+    }
+}
+```
+
+#### 1.3 **Update `MapVisualization.java` to Display Detected Objects**
+
+Now, update the `MapVisualization` class to print out the detected objects along with the drone’s position.
+
+```java
+package drone;
+
+import java.util.List;
+
+public class MapVisualization {
+
+    public static void display(int posX, int posY, List<ObjectDetection.DetectedObject> detectedObjects) {
+        System.out.println("Drone at: (" + posX + ", " + posY + ")");
+        
+        if (detectedObjects.isEmpty()) {
+            System.out.println("No objects detected.");
+        } else {
+            System.out.println("Detected objects:");
+            for (ObjectDetection.DetectedObject obj : detectedObjects) {
+                System.out.println("  - " + obj);
+            }
+        }
+    }
+}
+```
+
+### Step 2: **Run and Test**
+
+You can now run the updated program to simulate the drone detecting random objects (humans and vehicles) as it moves across the grid.
+
+```bash
+# Run the program
+javac src/drone/*.java
+java -cp src drone.Main
+```
+
+### Expected Output
+After running the program, you should see output like this:
+
+```text
+Starting drone simulation...
+Drone moved to position: (48, 52)
+Drone at: (48, 52)
+Detected objects:
+  - Human (Male Adult) at (52, 50)
+  - Vehicle (Truck) at (49, 58)
+Drone moved to position: (44, 48)
+Drone at: (44, 48)
+No objects detected.
+...
+```
+
+### Next Steps
+
+Now that we have object detection and basic map visualization working, the next logical steps would be:
+
+1. **Enhance the Map Visualization**: Add more complex rendering using JavaFX or another graphical library to show detected 
+objects on a real-time grid or map.
+2. **Expand Object Detection**: Fine-tune the object detection logic to include more realistic simulations, perhaps using 
+actual map data or scenarios.
+3. **Add Motion to Objects**: In future phases, we could simulate the movement of humans and vehicles to see how the drone 
+tracks them over time.
+
+Let me know if you'd like to proceed with enhancing the visualization or if you want to explore other features!
