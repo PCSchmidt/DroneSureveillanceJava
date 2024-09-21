@@ -1,6 +1,9 @@
 package drone;
 
 import java.util.List;
+import drone.ObjectDetection;
+import drone.ObjectDetection.DetectedObject;
+import drone.MapVisualization;
 
 public class Drone {
     private int posX, posY; // Drone's position on the map

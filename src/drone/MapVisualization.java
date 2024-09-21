@@ -1,6 +1,10 @@
 package drone;
 
 import java.util.List;
+import drone.ObjectDetection;
+import drone.ObjectDetection.DetectedObject;
+import javafx.scene.layout.Pane;
+
 
 public class MapVisualization {
 
